@@ -1,2 +1,4 @@
 # MU4MA016
-Repo for the course Alorithms and Data Structure for Computer Programning (MU4MA016) at Sorbonne Université. 
+Course Alorithms and Data Structure for Computer Programming (MU4MA016) at Sorbonne Université.
+This Repo will be used to update the course notes, and the exercises.
+
