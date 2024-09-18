@@ -10,10 +10,10 @@
 \newtheorem{lemma}{Lemma}
 \newtheorem{corollary}{Corollary}
 \theoremstyle{remark}
-\newtheorem{remark}{Remark}
-\newtheorem{exercise}{Exercise}
-\newtheorem{example}{Example}
-\newtheorem{warning}{Warning}
+\newtheorem*{remark}{Remark}
+\newtheorem*{exercise}{Exercise}
+\newtheorem*{example}{Example}
+\newtheorem*{warning}{Warning}
 
 \newcommand{\boR}{\mathbb{R}}
 \newcommand{\boC}{\mathbb{C}}
@@ -49,7 +49,7 @@
   keywordstyle=\color{eminence},
   stringstyle=\color{red},
   basicstyle=\footnotesize\ttfamily, % basic font setting
-  emph={int,char,double,float,unsigned,void,bool},
+  emph={int,char,double,float,unsigned,void,bool,size_t},
   emphstyle={\color{blue}},
   showspaces=false,               % show spaces adding particular underscores
   showstringspaces=false,         % underline spaces within strings
@@ -295,7 +295,9 @@ date, omitting year).
 \end{algorithm}
 
 We have implicitly assumed here that we have a notion of {\it Set}, over which we can
-{\it Iterate}, and which we can grow by make use of some {\it Insert}.
+{\it Iterate}, and which we can grow by making use of some {\it Insert}.
+
+\medskip
 
 An {\bf Abstract Data Structure (ADS)} is an abstract description of 
 \begin{enumerate}
@@ -355,7 +357,7 @@ some ID numbers instead of birthdays), and assume that both $M$ and $N$ get
 large but also that $M \gg N$ (by this we mean that $M$ is much larger than $N$)
 and that a spatial complexity of $O(M)$ is forbidden because it would be too
 large in practice. Are we forced to resort to the first version of the
-algorithm, or could do better ? ({\it Hint: hash tables and sorted trees are both in the
+algorithm, or could we do better ? ({\it Hint: hash tables and sorted trees are both in the
 menu for later}).
 
 \bigskip
@@ -569,7 +571,8 @@ $2.5e8$ is $2.5e8 + 1.$ If you take $N = 100$ instead, you'll start
 observing fractional parts in the answer.
 \end{remark}
 
-\begin{exercise} Compute that
+\noindent
+{\bf Exercise :} Compute that
 $$
 \boE(sum(C)^2) = \frac{1}{16}N^6 + \frac{1}{24}N^4 + \frac{1}{36}N^3
 $$
@@ -581,13 +584,12 @@ $$
 Run the test above multiple times, of with different values of $N$, and
 observe/check then that the deviation to the expected value is indeed 
 of the order of the standard deviation $\Sigma(sum(C)) \simeq 0.2 N^2$.\\
-{\it Hint : while evaluating termes of the form
+{\it Hint : while evaluating terms of the form
 $\boE(A_{ij}B_{jk}A_{i'j'}B_{j'k'})$, distinguish between the three cases : 
 a) $(i,j,k) = (i',j',k')$, b) $(i,j) = (i',j')$ or $(j,k)=(j',k')$ but $(i,j,k)
 \neq (i',j',k')$, and finally c) $(i,j) \neq (i',j')$ and $(j,k) \neq (j',k')$. 
 Recall also that whenever $X$ is uniform over $[0,1]$, $\boE(X^2) = 
 \int_0^1 x^2\, dx = \frac{1}{3}$.} 
-\end{exercise}
 
 \medskip
 
@@ -638,8 +640,8 @@ What can/should we do to improve our code to state of the art performance then ?
 There are easy improvements :
 \begin{enumerate}
 \item Allow the compiler to use the whole set of CPU instructions for the computer
-with are running on (this can be an issue if we wish to distribute our program to
-machines which would not have all this set) The gcc option is {\tt -march =
+we are running on (this can be an issue if we wish to distribute our program to
+machines which would not have all this set). The gcc option is {\tt -march =
 native}. A safer yet usually as effective solution is to require a common vector
 instruction set, like the MMX or AVX. We shall use the {\tt -mavx} gcc switch.
 \item Modify our C code by adding the {\it restrict} keyword to the output array
@@ -674,7 +676,7 @@ Timer Algo 2: 69.523 ms
 Sum of C : 250279296.000000
 \end{lstlisting}
 We have improved from $140ms$ to $70ms$, that is a factor 2, not bad ! Be we
-ares still missing a factor almost 10. Let us observe the Operating System 
+are still missing a factor almost 10. Let us observe the Operating System 
 Monitor, first during our own implementation : 
 \begin{center}
 \includegraphics[width=15cm]{data/mat_mult_one_core.png}
@@ -715,5 +717,187 @@ of Math/CS has been a very hot topic in recent years. This yields challenges bot
 algorithmic level, and at the implementation level. They require specific courses 
 and we shall not dive too deeply into it, yet they all build upon the concepts
 we shall develop in this course.
+
+\pagebreak
+
+\noindent \underline{{\sc Week 2 : Sept. 12th 2024}}
+
+\section{Abstract vs Concrete Data Structure}
+
+It is always useful and also often important to separate what we will call the 
+{\it interface} from what we will call the {\it implementation}. In the table
+below I have listed a number of concepts : all the ones in the left column
+correspond (and may be more or less understood as equivalent between each
+other) to the interface, while all the ones in the right column correspond to
+the implementation.
+
+\medskip
+
+\begin{center}
+	\begin{minipage}[t]{0.45\textwidth}
+	On the user side :
+	\begin{itemize}
+		\item Abstract Data Structure
+		\item Interface / Documentation
+		\item Application Programming Interface (API)
+		\item Header files\\
+			In C/C++, typically {\tt .h} or {\tt .hpp}
+	\end{itemize}
+\end{minipage}
+	\begin{minipage}[t]{0.45\textwidth}
+	On the programmer side :
+	\begin{itemize}
+		\item Concrete Data Structure
+		\item Implementation
+		\item Source code\\\mbox{ }
+		\item Source files\\In C/C++, typically {\tt .c} or {\tt .cpp}
+	\end{itemize}
+\end{minipage}
+\end{center}
+
+In vague terms the interface {\it should} desbribe : 
+\begin{itemize}
+	\item what kind of data it is designed to handle
+	\item what actions on this data it can perform
+	\item possibly offer some guarantee about algorithmic complexity of
+		some of these actions (worst case, expected mean, etc).
+\end{itemize}
+
+It should {\it not} describe {\it how} these are implemented. One of the reasons
+for the latter is the ability to update/improve the implementation without
+breaking user code.
+
+\medskip
+
+A key point to have in mind when designing interfaces and implementations is
+that less methods/actions available in the interface implies :
+\begin{itemize}
+	\item less flexibility for the user
+	\item less constraints for the implementation, and therefore possibly
+		better performance
+\end{itemize}
+As a rule of thumb : one should not devise overcomplicated data structures, but
+choose the simplest one(s) that fit all the identified requirements for a task,
+but no more. Some people call it the KISS philosophy : Keep It Straight and
+Simple.
+
+\medskip
+
+An example in the standard C library which one encounters in the very first
+steps of learning the language is the {\tt FILE} abstract data structure
+for file IO (i.e. reading and writing to files).
+
+Some typical code would look like
+
+\begin{lstlisting}[style=C]
+#include <stdio.h>
+
+// [some code here]
+
+FILE *f;  
+f = fopen("example.txt", "r");
+if (f == NULL) {
+	// [produce error message and exit]
+}
+
+// [do something with f]
+
+fclose(f);
+\end{lstlisting}
+
+What exactly is contained in {\tt FILE} needs not be known to us\footnote{It is actually
+a macro for a (complicated) C struct defined in stdio.c}, we shall use it only as
+a {\it opaque handle}. In the {\it header} file {\tt stdio.h} we can
+find\footnote{On Linux systems this file is found in {\tt /usr/include/stdio.h}} 
+(among other things) the {\bf declaration}
+\begin{lstlisting}[style=C]
+FILE *fopen(const char *__filename, const char *__modes);
+\end{lstlisting}
+which teaches us that the function {\tt fopen} :
+\begin{itemize}
+	\item requires two arguments, both of which being of type 
+		{\tt char *} (used to represent character strings) and 
+		which won't be modified by the function itself (because they 
+		are marked with the keyword {\tt const}).
+	\item returns a pointer to a {\tt FILE} data structure.
+\end{itemize}
+Most of the time, to access documentation for standard libraries you will
+instead refer to online documents, like e.g. 
+\url{https://cplusplus.com/reference/cstdio/fopen/} in the above case.
+
+Whenever we need to do something with the file, we must use the handle (it is
+called {\tt f} is the sample code above) and pass it to the relevant function, as in
+\begin{lstlisting}[style=C]
+// [do something with f]
+char line[80];
+fread(line, 80, f);
+\end{lstlisting}
+
+\section{Array based vs Pointer based implementation} 
+
+The implementation of data structures can usually be divided into two families : 
+\begin{enumerate}
+	\item Array based
+	\item Pointer based
+\end{enumerate}
+
+The difference between both amounts to the way the data is stored in virtual
+memory. 
+
+When array based, the data is stored in a {\it contiguous} way and it is
+assumed that each element of the array occupies the same amount of space in
+memory. The main implication of this is that to recover the element of index
+{\tt k}, it suffices to fetch memory at the address being computed as the address
+of the start of the array plus {\tt k} times the size of an array element. In
+other words, only the address of the start of the array needs to be recorded. 
+
+When pointer based instead, the data may be spread across memory. The implication is
+that each element of the data should be accompanied with a way to access the
+next and or the previous one(s), typically by storing its/their address(es).
+
+We can therefore quickly foresee the advantages and limitations of both : 
+
+\begin{itemize}
+	\item Array based are potentially much faster because they allow for
+		direct access to any element by its index and need not store 
+		addresses. On the other hand,
+		the contiguity assumption has some implications on some
+		operations (e.g. suppressing an element would imply a
+		potentially large copy in order to avoid creating a gap, and the
+		same would apply to some insertion in the middle). The
+		question of how large the reserved memory chunk to store the
+		array should be chose is also an important question, especially
+		when it is not known a priori how large the data structure will
+		be eventually (imagine we read elements from a file, and we only
+		know we are finished when we reach its end).
+	\item Pointer based have the exact opposite advantages and limitations. 
+		Adding and/or suppressing elements is conceptually and
+		practically simpler, because it only implies modifying a
+		couple of pointers, but that may come at the price of
+		performance. Besides, direct access to the k-th element 
+		(whenever it makes sense, not all structures have a natural
+		mapping to sequences, think e.g. of arbitrary trees) 
+		is typically not possible for them.
+\end{itemize}
+
+To provide an example of both, and having the goal of separation 
+interface/implementation in mind, in the sequel we propose one common 
+interface and two possible implementations for a {\it Stack} data structure.
+This is one of the simplest data structures, and it will therefore serve well
+our expository purposes. The first implementation will be pointer based, while 
+the second will be array based. 
+User code should should equally work in both cases, as a matter of fact there
+is nothing in the interface suggesting how it is implemented.
+
+First the interface :
+\lstinputlisting[style=C]{data/stack.h}
+
+Next the pointer based implementation :
+\lstinputlisting[style=C]{data/stack_pointer_based.c}
+
+And finally the array based one :
+\lstinputlisting[style=C]{data/stack_array_based.c}
+
+
 
 \end{document}
