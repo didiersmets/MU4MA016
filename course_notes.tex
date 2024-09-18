@@ -898,6 +898,12 @@ Next the pointer based implementation :
 And finally the array based one :
 \lstinputlisting[style=C]{data/stack_array_based.c}
 
-
-
+\noindent{\bf Exercise :} Assuming the cost of a memory allocation for a block
+of size $M$ is $O(M)$, compute that using the doubling strategy for the array
+capacity in the previous implementation, the average cost for $N$ successive
+pushes to the stack is only $O(1)$. Instead, realize that any strategy which
+would be based on a fixed additive capacity increase (rather than a 
+multiplicative strategy) would lead to an $O(N)$ average cost. The factor 2 is
+not important though, any (possibly non integer) number $r>1$ would accomplish
+the same goal.  
 \end{document}
