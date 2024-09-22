@@ -58,7 +58,7 @@
   keywordstyle=\color{eminence},
   stringstyle=\color{red},
   basicstyle=\footnotesize\ttfamily, % basic font setting
-  emph={int,char,double,float,unsigned,void,bool,size_t},
+  emph={int,char,double,float,unsigned,void,bool,size_t,inline,template,auto,static},
   emphstyle={\color{blue}},
   showspaces=false,               % show spaces adding particular underscores
   showstringspaces=false,         % underline spaces within strings
@@ -756,7 +756,7 @@ we shall develop in this course.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pagebreak
-\section{Some key concepts}
+\section{Some programming concepts}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -958,6 +958,49 @@ would be based on a fixed additive capacity increase (rather than a
 multiplicative strategy) would lead to an $O(N)$ average cost. The factor 2 is
 not important though, any (possibly non integer) number $r>1$ would accomplish
 the same goal.  
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Inlining}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+This subsection can be skipped at first reading, and is mostly meant for students 
+that already have a compiled languages background.
+
+In some cases, a clear separation between the interface and the implementation 
+implies some performance costs which are undesirable. This situation arises
+when some utility functions which are implemented are so small and used so often 
+that the function calls themselves end-up accounting for most of the total cost.
+
+\medskip
+
+To avoid these situations, it is sometimes therefore advisable to {\it not}
+separate both the interface and the implementation, so that the compilers will
+always view the whole code of the given functions when including them elsewhere,
+and will be able to optimize it better.
+
+\medskip
+
+As a typical example, the next listing proposes an implementation for an array
+data structure. It is very much similar to the above array based implementation 
+of a stack data structure, but promoted to an array data structure by adding 
+random access to any index in the array. This is also the occasion to introduce some
+\cpp that wouldn't compile as C code : it uses {\it templates}, and {\it methods} (in particular
+constructors and destructors). Both concepts are not present (at least
+as such) in plain C. They are mostly conveniences for the programmer, and 
+they should be approached with care : do not over-abuse templates if you wish 
+your code to compile fast, and pay attention to unnecessary copies in constructors 
+it you wish your code to run fast !
+
+\lstinputlisting[style=C]{data/array.hpp}
+
+If you are familiar with \cpp, that may remind you of the {\tt std::vector} data
+structure from the Standard Templated Library (STL). Pay attention though that
+the {\tt TArray} version above is only really meant for types $T$ that are POD 
+(Plain Old Data), i.e. types that can simply be bitwise copied and in particular 
+have no need for constructors or destructors. In scientific computing the latter
+are more important and more frequent for the ``real data''.
+
+
 
 \pagebreak
 
