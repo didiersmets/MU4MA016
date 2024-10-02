@@ -1379,7 +1379,7 @@ the number of elements to be sorted.
 
 To overcome that limitation, the idea behind {\it radix sort} is simply to 
 apply counting sort successively on each "digit" of the data, assuming that the
-data can be described in such a form and each "digit" can only take a limited
+data can be described in such a form and that each "digit" can only take a limited
 number of values (making it appropriate for counting sort).
 
 Imagine for example we need to sort $N$ strings of fixed length k 
@@ -1388,7 +1388,7 @@ A[i] = c_{1,i}c_{2,i}\cdots c_{k,i},
 $$
 in lexicographical order. Here each $c_{j,i}$ ($1\leq j \leq k$, $0\leq i \leq N-1$) 
 belongs to the alphabet set $\{a, b ,c ,d, \cdots, y, z\}$.
-We can applying counting sort (with 26 buckets) successively for each positional 
+We can apply counting sort (with 26 buckets) successively for each positional 
 character, where each output array is used as the input of the next pass of counting
 sort. That would lead to a cost of $O(kN)$, and if $k$ is considered a fixed
 constant then this is $O(N).$ But {\it care must be taken in the order in 
@@ -1399,10 +1399,10 @@ easy to realize that the sort obtained e.g. in the first pass will be destroyed
 in general by the second (and following) passes. The drawback of this ordering
 of the counting sort passes is that the Most Significant Digit (here character) 
 only gets considered last, and therefore up until the last pass the array is
-potentially far from being sorted. A variant of radix sorting (called MSD radix
+potentially far from being sorted. A variant of radix sort (called MSD radix
 sort) applies counting sort starting from the most significant digit. In order
 to avoid the trap which we discussed above, the second pass is not applied to
-the full array, but successively to all buckets formed in the fist pass (it is
+the full array, but successively to all buckets formed in the first pass (it is
 usually implemented using recursion). This has the advantage that already after
 the first pass the array in closer to its final state (this has implication on
 performance because we know that changes to memory are faster when the
@@ -1421,12 +1421,12 @@ $$
 where each $b_i \in \{0, 1\}$, leading to a value in the range $\{0, \cdots,
 2^{32} - 1\}$.
 
-The granularity (i.e. the choice if the radix/alphabet) is important in practice. We could
+The granularity (i.e. the choice of the radix/alphabet) is important in practice. We could
 do 32 passes, one over each bit, but that would be very inefficient (very few
-work done on each pass). We could also to just one pass with $2^{32}$ buckets, 
-but that would be both inefficient (lost of zeros in counts) and memory hungry 
+work done on each pass). We could also do just one pass with $2^{32}$ buckets, 
+but that would be both inefficient (lots of zeros in counts) and memory hungry 
 ($2^{32}$ * 4 bytes per int = 16Gb of RAM just for the count array).
-Instead we shall do in 4 passes by considering each sequence of 8 bit (i.e. each
+Instead we shall do it in 4 passes by considering each sequence of 8 bits (i.e. each
 byte) as a 'digit'. The counting sort will therefore rely on $2^8 = 256$ buckets.
 
 \medskip
@@ -1441,12 +1441,12 @@ the code) :
 	\item In the MSD implementation, which is recursive, if the
 		number of elements in some bucket becomes too small (we choose 
 		32), instead of pursuing the recursion we switch to insertion
-		sort, which we known is fast if not the fastest for small array
+		sort, which we know is fast if not the fastest for small array
 		size.
 	\item In the second listing, we implement counting sort in place, i.e.
 		with no memory allocation at all and placing the sorted output
 		in place of the input. This requires some care (the key section
-		is the last 'write back' loop on lines 26 to 40 the function {\tt
+		is the last 'write back' loop on lines 26 to 40 in the function {\tt
 		counting\_sort\_in\_place})
 \end{itemize}
 
@@ -1785,7 +1785,7 @@ evaluation of $h$ is $O(1)$).
 \medskip
 {\bf Framework:} In the sequel we abstract ourselves from the restriction
 that the values we received came sequentially, instead we shall consider
-as a set of so-called {\it keys}. More precisely, we shall note 
+them as a set of so-called {\it keys}. More precisely, we shall note 
 \begin{itemize}
 	\item $\mathcal{T}$ the set of all potential keys,
 	\item $\mathcal{K} \subset \mathcal{T}$ the set of actual keys, and we
@@ -1889,9 +1889,9 @@ The elephant in the room is of course that evaluation of $bad\_hash$ is $O(N)$,
 which annihilates the whole potential benefit of hashing.
 
 \medskip
-To minimize collisions, we have the intuitive idea that they keys should be
+To minimize collisions, we have the intuitive idea that the keys should be
 spread ``evenly'' by $h$. If we must choose $h$ before knowing $\mathcal{K}$
-(the most common situation in applications), the we must deal with the following
+(the most common situation in applications), then we must deal with the following
 bad news :
 
 \begin{lemma} If $\#(\mathcal{T}) > (N-1)M$ then whatever hash function $h
@@ -1984,8 +1984,8 @@ constant. Then the expectation according to $P$ of the average cost of
 each of these operations is $O(1)$. 
 \end{lemma}
 
-This result is main theoretical selling point of hash table, compared to 
-the costs $O(log(N)$ or even $O(N)$ which we discussed earlier. Of course
+This result is main theoretical selling point of hash tables, compared to 
+the costs $O(log(N))$ or even $O(N)$ which we discussed earlier. Of course
 it only holds in expectation, as we have seen that there cannot be a
 satisfactory a priori guarantee for whatever fixed $h$. 
 
@@ -2031,7 +2031,7 @@ m_{i_0}\Big(b_{i_0} - b_{i_0}' \Big) = c_{i_0}.
 \end{equation}
 By assumption $0 \leq b_{i_0}, b_{i_0}' \leq 2^{B} - 1 < M$, and $b_{i_0} \neq
 b_{i_0}'.$ In particular $b_{i_0} - b_{i_0}' \neq 0 \ \text{mod } M.$ Since 
-$M$ is prime (and therefore $\mathbb{Z}/(M\mathbb{Z}$ is a finite field),
+$M$ is prime (and therefore $\mathbb{Z}/M\mathbb{Z}$ is a finite field),
 equation \eqref{eq:infield} possesses one and only one solution $m_{i_0} \in
 \{0, \cdots, M-1\}$, namely
 $$
@@ -2140,7 +2140,7 @@ $$
 P(\sum_{i=0}^{N-1} N_i^2 \leq 4N) \geq \frac12. 
 $$
 As a consequence, if we pick the initial $h$ at random then after 2 tries in
-expectation we shall find a one for which $\sum_{i=0}^{N-1} N_i^2 \leq 4N$, and
+expectation we shall find one for which $\sum_{i=0}^{N-1} N_i^2 \leq 4N$, and
 therefore for which the corresponding final aggregated hash table will have a size
 less or equal to $4N = O(N)$, hence achieving our goal.  
 
@@ -2162,7 +2162,7 @@ slot. Instead colliding keys will be dealt with by advancing in the table until
 a free slot is found. More precisely, to insert a new key in the table :
 \begin{enumerate}
 	\item Compute {\tt pos = hash(new\_key)}
-	\item While {\tt A[pos]} is occupied, increment {\tt pos} by by one and round
+	\item While {\tt A[pos]} is occupied, increment {\tt pos} by one and round
 		the result modulo the table size (so that if we reach the end of
 		the table we cycle back at the beginning of it).
 	\item Finally insert the key at {\tt A[pos]} (the current value of {\tt
@@ -2406,10 +2406,10 @@ lists, can be improved in a number of ways.
 		optimizations to the compiler, especially with the next
 		optimization.
 	\item  Generic programming in C is convenient and acceptably fast, but
-		type erasure (i.e. use of {\tt void*}  and {\tt memcpy, memcmp}
-		prevent the compiler from potentially optimization possible when
-		the type of the data is known at compile type. \cpp through the
-		use of templates can be used to overcome this.
+		type erasure (i.e. use of {\tt void*}  and {\tt memcpy, memcmp}) 
+		prevent the compiler from potential optimizations possible when
+		the type of the data is known at compile type. \cpp, through the
+		use of templates, can be used to overcome this.
 \end{enumerate}
 
 The next \cpp code snippet shows all these optimizations working together in a hash
