@@ -2312,7 +2312,7 @@ $(V,E)$ is a rooted tree with root $r \in V$ if and only if
 		\item the root $r$ has no parent.
 	\end{enumerate}
 By convention, an empty set of nodes and edges is also called a rooted tree
-(with no root). Nodes in the tree that have non children are called leaves.
+(with no root). Nodes in the tree that have no children are called leaves.
 \end{definition}
 
 A number of easy properties or new definitions are in order :
@@ -2359,7 +2359,7 @@ the latter exist.
 
 Searching into trees will imply traversing them down from the root. In
 applications, it is therefore desirable to keep their height under control. If a
-tree contains $N = \#(V)$ nodes, then its height $H$ can be as large as $N - 1$
+tree contains $N = \#(V)$ nodes, then its height $H$ can be as large as $N$
 (when the tree is no more than an linked list). On the extreme opposite, if a
 binary tree is perfect (i.e. if all its leaf nodes are at the same depth and all non 
 leaf nodes have exactly two children), then $N = 1 + 2^1 + 2^2 + \cdots + 2^{H -
@@ -2431,12 +2431,12 @@ and binary heaps.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Binary search trees are important alternatives to hash-tables for storing keys
-or key/value pairs. While keys were hashed into hash tables, keys shall be sorted
+or key / value pairs. While keys were hashed into hash tables, keys shall be sorted
 into binary search trees. More precisely : 
 
 \begin{definition} 
 A binary search tree is a binary tree for which each node is associated with a key
-and the following BST condition holds : 
+in a totally ordered set and the following BST condition holds : 
 	\begin{enumerate}
 		\item $\forall v \in V$, $\forall w \in lst(v)$, $w.key < 
 			v.key$
@@ -2445,42 +2445,34 @@ and the following BST condition holds :
 	\end{enumerate}
 \end{definition}
 
-In particular, keys must be distinct\footnote{Although, there are ways to
-circumvent this limitation in practice, it is a good exercise to think about it}.
+In particular, keys must be distinct. Note that it is possible to relax this last
+limitation, and/or to allow pre-ordered set of keys, by replacing strict
+inequalities above by non strict ones. This requires additional constraints though, 
+so that searches in the tree do not end up unpractical.
+below).  
 
 \medskip
 
-Finding a key in a BST is therefore as simple as :
+With the above definition, finding a key in a BST is as simple as :
 
 \begin{itemize}
-	\item Start at the root.
-	\item Go down the three by choosing the left of right sub-tree at each
-		encountered node by comparing the looked-up key with 
-		the key of the node.
-	\item When a leaf node is reached then new node is inserted as its left
-		or and the key has still not been found then it
-		isn't in the tree.
+	\item If the tree is empty then the search fails.
+	\item Else if the tree is non empty and the key of the root is equal to 
+		the searched key the search is successful.
+	\item Else if the root has a key which is smaller than the searched key, then
+		proceed with the search in its right sub-tree
+	\item Else proceed with the search in its left sub-tree.
 \end{itemize}
 
-Insertions are very similar : 
-
-\begin{itemize}
-	\item Start at the root.
-	\item Go down the three by choosing the left of right sub-tree at each
-		encountered node by comparing the key to be inserted with 
-		the key of the node.
-	\item Insert the key as a new node (which shall be a leaf) when the 
-		are no more sub-tree to visit reaching an .
-\end{itemize}
-
-
-The following simple implementation is based on recursion. The values
-here are assumed to be integers for simplicity. They might be replaced by any 
-type together with an ordering.  In the tutorials, you will deal with a situation where
-the tree nodes are contained in the data (this is called an intrusive tree), 
+Insertions are very similar. 
+The following elementary implementation is based on recursion. The values
+here are assumed to be integers for simplicity. In the tutorials, you will 
+deal with a situation where the tree nodes are contained in the data 
+(this is called an intrusive tree), 
 rather containing it, it is a much more common use in real applications, which
 also has the advantage to delegate memory allocation to the user side.
-Note also that in this implementation we allow nodes with equal values.
+Note also that in this implementation we allow nodes with equal values, 
+but searches and insert always pick the same side in case of equality.
 
 \begin{lstlisting}[style=C]
 #include <stdlib.h>
@@ -2501,12 +2493,12 @@ static struct Node *new_node(int val)
 
 struct Node *bst_find_recur(struct Node *root, int val)
 {
-	if (!root)
-		return root;
+	if (!root || root->val == val)
+		return val;
 	return bst_find_recur(root->child[val > root->val], val);
 }
 
-/* Note : In this implement duplicate vals are allowed */
+/* Note : In this implementation duplicate vals are allowed */
 struct Node *bst_insert_recur(struct Node *root, int val)
 {
 	if (!root) {
@@ -2525,7 +2517,7 @@ actually removed, and its key value is kept for later routing. Otherwise, the
 proper way to do it is to swap the node to be deleted with either the smallest
 node in its right sub-tree, or the largest node in its left sub-tree (and delete
 the latter). There is a possible short-cut in the case where the node to be 
-deleted only has one (or zero) children : in that case it suffices to deleted
+deleted only has one (or zero) children : in that case it suffices to delete
 the node and attach its (only or none) children to its grand parent. 
 
 \begin{lstlisting}[style=C]
@@ -2539,7 +2531,7 @@ struct Node *bst_delete_recur(struct Node *root, int val)
 	} else if (!root->child[0] || !root->child[1]) {
 		bool dir = !root->child[0];
 		struct Node *tmp = root->child[dir];
-		free(root); /* might be null */
+		free(root);
 		root = tmp;
 	} else {
 		/* Smallest node in the root right sub-tree */
