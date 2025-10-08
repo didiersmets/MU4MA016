@@ -2494,7 +2494,7 @@ static struct Node *new_node(int val)
 struct Node *bst_find_recur(struct Node *root, int val)
 {
 	if (!root || root->val == val)
-		return val;
+		return root;
 	return bst_find_recur(root->child[val > root->val], val);
 }
 
@@ -2632,8 +2632,10 @@ insertion costs are logarithmic.
 First, without loss of generality we can assume that set of keys to be inserted
 are the integers $\{1, \cdots, N\}.$ Indeed, the actual keys do not matter,
 only their ordering is important. Our averaging set will therefore be the set
-$\sigma_N = \left\{ \sigma : \{1, \cdots, N\} \to \{1, \cdots, N\} \text{ a
-permutation}\right\}$, equipped with uniform probability.
+$$\sigma_N = \left\{ \sigma : \{1, \cdots, N\} \to \{1, \cdots, N\} \text{ a
+permutation}\right\},$$ equipped with uniform probability, where $\sigma(i) =
+j$ means that the key with value $i$ is the $j^{th}$ one to be inserted.
+.
 
 \begin{lemma}
 The expectation of the total insertion cost of all the keys starting
@@ -2786,7 +2788,7 @@ The same applies for deletions, except that both the blue and green cases can
 occur. In the blue case both the tree after rotation and the tree before deletion 
 (i.e. for which $T_1$ had height $h+1$) have total height $h+3$, while in the
 green case they both have height $h+2$. Therefore {\bf at most one node can become 
-unbalanced after a deletion leading to Case 1.}.
+unbalanced after a deletion leading to Case 1}.
 
 \medskip
 
@@ -2953,7 +2955,7 @@ struct AVLNode *avl_delete(struct AVLNode *root, int val)
 
 \begin{definition}
 	A (max on top) binary heap is a rooted binary tree where each node is associated with 
-	key and the following heap property holds :
+	a key and the following heap property holds :
 	\begin{enumerate}
 		\item $\forall v \in V$, $\forall w \in lst(v)$, $w.key <=
 			v.key$.
@@ -2978,7 +2980,7 @@ since the heap property only tells us if we need to proceed down, but if yes we
 can proceed left or right as we please. As a matter of fact, heap type data 
 structures generally only implement lookup or extraction of the highest key, that is the one at the
 root, and insertion of an arbitrary key (also, contrary to BST, keys in heaps may
-not be unique). Heaps are typically used for implementing priority-queues, where extraction
+not be unique). Heaps are typically used for implementing {\it priority-queues}, where extraction
 of the task with highest priority is the only deletion op available, while
 tasks of arbitrary priorities can be inserted.
 
@@ -2986,8 +2988,8 @@ tasks of arbitrary priorities can be inserted.
 
 Because there is more freedom during insertion in heaps, the resulting tree can
 be chosen to not only be balanced but also complete and full on the left. This means 
-that all depth levels in the binary tree are full except possibly the one, 
-corresponding to the highest depth, and which must only be full from the left.
+that all depth levels in the binary tree are full except possibly the one  
+corresponding to the highest depth, which must only be full from the left.
 An example is illustrated in the next figure :
 
 \begin{center}
@@ -3008,7 +3010,7 @@ this process after a new node of value 10 as been inserted in the heap.
 When extracting the root node, the constraint to be a complete tree forces the
 ``lower-right'' node in the tree to moved in place of the old root. This again
 breaks the heap property and the new root must be pushed down a number of time
-in order to reset it. The correct governing rule for the push down is to swap
+in order to reset it. The correct governing rule for the {\it sift-down} is to swap
 the node with the one of its two children which has the highest value (choosing
 the one with the lowest value may imply another failure of the heap property),
 as long as the heap property isn't satisfied. This is again illustrated in the
@@ -3019,7 +3021,7 @@ last figure below, we the heap is shown after the root 18 was extracted :
 \end{center}
 
 The most interesting feature concerning this restriction about the tree to be a 
-complete tree is that that such trees can easily be implemented as arrays, thus
+complete tree is that that {\bf such trees can easily be implemented as arrays}, thus
 avoiding the use of pointers and allocation at each insertion. In this array
 implementation, the root node is placed at index 0, and the next indices in 
 the array correspond to reading the tree from top to bottom and on each depth
@@ -3038,13 +3040,21 @@ balanced tree, is $O(\log(N))$. This cost correspond to the maximum number of
 swaps which occur during each of such operations, and is bounded by the total height of
 the tree, which is $O(\log(N))$.
 
-The $C$ code for such implementations is the object of one of the tutorials,
+\medskip
+
+The C code for such implementations is the object of one of the tutorials,
 with an additional feature to allow for node value update, which will be helpful
 when implementing the Dijkstra algorithm for finding optimal paths in weighted graphs.
+
+\medskip
 
 %%%%%%%%%%%%%%%%%%
 %TODO : Heap sort
 %%%%%%%%%%%%%%%%%%
+Another interesting and efficient application of heaps that we discussed in
+class, in addition to the already mentioned priority-queues, is an in place 
+and $O(\log(N))$ sorting algorithm: {\it heap sort}.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
