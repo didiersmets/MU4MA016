@@ -1,0 +1,5 @@
+https://www.cs.cmu.edu/afs/cs/academic/class/15492-f07/www/pthreads.html
+
+https://www.openmp.org/wp-content/uploads/omp-in-action-SC05.pdf
+
+
